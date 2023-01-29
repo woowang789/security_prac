@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -35,6 +37,10 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter{
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
+		DefaultWebSecurityExpressionHandler defaultWebSecurityExpressionHandler = 
+				new DefaultWebSecurityExpressionHandler();
+		defaultWebSecurityExpressionHandler.setRoleHierarchy(roleHierarchyImpl());
+		web.expressionHandler(defaultWebSecurityExpressionHandler);
 		web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
 	}
 
@@ -70,6 +76,13 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter{
        		.csrf().disable();
 	}
 	
+    @Bean 
+    public RoleHierarchyImpl roleHierarchyImpl() {
+        log.info("roleHierarchyImpl 실행");
+        RoleHierarchyImpl roleHierarchyImpl = new RoleHierarchyImpl();
+        roleHierarchyImpl.setHierarchy("ROLE_ADMIN > ROLE_MANAGER > ROLE_USER");
+        return roleHierarchyImpl;
+    }
 	
     @Bean
     public PasswordEncoder passwordEncoder() {
