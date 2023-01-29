@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+</head>
+<body>
+	<button id="btn">전송</button>
+	<button id="btn2">전송</button>
+	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			console.log('ttt');
+			
+			$("#btn").click(function(e){
+				
+				$.ajax({
+					url: '/api/user',
+					data: {test:"test"},
+					method: "GET"
+				})
+				.done(function(data){
+					console.log("data : ", data);
+				})
+				.fail(function(xhr, status, error){
+					console.log(status, error);	
+				})
+			});
+			
+			$("#btn2").click(function(e){
+				
+				$.ajax({
+					url: '/api/user',
+					data: JSON.stringify({test:'test'}),
+					method: "POST",
+					contentType: 'application/json',
+					dataType   : 'json',
+					
+				})
+				.done(function(data){
+					console.log("data : ", data);
+				})
+				.fail(function(xhr, status, error){
+					console.log(status, error);	
+				})
+			})
+		})
+	</script>
+</body>
+</html>
